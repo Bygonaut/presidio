@@ -1,0 +1,67 @@
+Hi, welcome to my attempt at the api challenge! 
+
+I used ASP.NET Core 2.0 and SQLite for my Api.
+There are a few things you will need to get this up and running!
+
+First, you will need to download the .NET Core 2.0+ SDK.
+You can find that here: www.microsoft.com/net/download/visual-studio-sdks
+
+Next, you will need to download Postman or a tool of your liking to make http requests.
+You can find that here: www.getpostman.com/apps
+
+Now, open up your command prompt, change directory to the folder called "ContactCenter".
+
+Then, type "dotnet build", followed by "dotnet run".
+Please observe the port you are listening on. 
+
+In this case it is listening on port 51194.
+
+Now inside of Postman or the tool of your choice, you can run gets/posts/puts/deletes
+on the entities inside of my application. Your Posts/Puts/Deletes WILL affect the SQLite database
+inside of the application. Here is the schema for the database:
+
+CREATE TABLE `Agents` (
+	`AgentId`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	`FirstName`	TEXT,
+	`LastName`	TEXT,
+	`Phone`	TEXT,
+	`TeamId`	INTEGER NOT NULL,
+	`IsSupervisor`	INTEGER NOT NULL
+);
+
+CREATE TABLE `Team` (
+	`TeamId`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	`TeamName`	TEXT,
+	`SupervisorAgentId`	INTEGER NOT NULL
+);
+
+CREATE TABLE `TeamMembers` (
+	`TeamMemberId`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	`TeamId`	INTEGER NOT NULL,
+	`AgentId`	INTEGER NOT NULL
+);
+
+Example Get Requests:
+GET localhost:51194/api/Teams/
+GET localhost:51195/api/Agents/
+GET localhost:51195/api/Agents/1
+
+Example POST Request:
+POST: localhost:51194/api/Agents/
+Header: Key = Content-Type, Value = application/json
+Body: set to raw and make it JSON(application/json), then enter the below:
+{
+    "firstName": "MoTesting",
+    "lastName": "Ahmad",
+    "phone": "6314452989",
+    "teamId": 1,
+    "isSupervisor": 1
+}
+
+Example Delete Request: 
+DELETE localhost:51194/api/Agents/8
+(warning, actually deletes from SQLite db)
+
+The next step would have been to create a business workflow logic and UI, for example: 
+-if an agent gets deleted, remove them from the team.
+-if a supervisor becomes a regular agent, make sure their team is assigned a new supervisor
